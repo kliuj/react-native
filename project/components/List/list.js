@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Navigator,
   TouchableOpacity,
   Text
 } from 'react-native';
@@ -11,7 +10,7 @@ class List extends Component{
   constructor(props) {
     super(props);
   }
-  _pressButton(id) {
+  _pressButton(id,title) {
        const { navigator } = this.props;
        //这里可以取得 props.navigator:
        //<Component {...route.params} navigator={navigator} />
@@ -21,7 +20,8 @@ class List extends Component{
                name: 'DetailPage',
                component: DetailPage,
                params:{
-                 id:id
+                 id:id,
+                 title:title
                }
            })
        }
@@ -30,7 +30,7 @@ class List extends Component{
     let item = this.props.data;
     return (
       <View  style={styles.listItem} >
-       <TouchableOpacity onPress={this._pressButton.bind(this,item._id)}>
+       <TouchableOpacity onPress={this._pressButton.bind(this,item._id,item.title)}>
           <View style={{flex:1,flexDirection: 'row',height:30,paddingRight:10}}>
             <Text  numberOfLines={1} style={{flex:8}}>
               {item.title}
@@ -52,6 +52,45 @@ class List extends Component{
     )
   }
 }
+
+class SearchList extends Component{
+  constructor(props) {
+    super(props)
+  }
+  _pressButton(id,title) {
+       const { navigator } = this.props;
+       //这里可以取得 props.navigator:
+       //<Component {...route.params} navigator={navigator} />
+       //这里传递了navigator作为props
+       if(navigator) {
+           navigator.push({
+               name: 'DetailPage',
+               component: DetailPage,
+               params:{
+                 id:id,
+                 title:title
+               }
+           })
+       }
+  }
+  render(){
+    let item = this.props.data;
+    return (
+      <View  style={styles.searchListItem} >
+       <TouchableOpacity onPress={this._pressButton.bind(this,item._id,item.title)}>
+          <View style={{flex:1,flexDirection: 'column',height:50,paddingRight:10}}>
+            <Text  numberOfLines={1} style={{height:30,fontSize:18}}>
+              {item.title}
+            </Text>
+            <Text style={{textAlign: 'left',height:20}} numberOfLines={1}>
+              作者：{item.user}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
 const styles  = StyleSheet.create({
   listItem:{
     height:84,
@@ -61,6 +100,17 @@ const styles  = StyleSheet.create({
     paddingLeft:10,
     paddingTop:15,
     paddingBottom:10
+  },
+  searchListItem:{
+    height:70,
+    flex:1,
+    borderBottomWidth:2,
+    borderBottomColor: '#ddd',
+    paddingLeft:10,
+    paddingTop:10,
+    paddingBottom:10
   }
 })
+
 export default List
+export {SearchList}

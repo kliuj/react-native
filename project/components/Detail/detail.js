@@ -17,10 +17,11 @@ import {
 
 import Header from '../Header/header.js'
 
+
 class Detail extends Component {
   constructor(props) {
     super(props);
-    this.state={blog:null,name:'内容详细'}
+    this.state={blog:'<div style="margin-top:50px;text-align:center">正在加载数据...</div>'}
   }
   componentDidMount(){
       fetch('http://lwons.com:3000/query/blogDetail', {
@@ -35,16 +36,20 @@ class Detail extends Component {
       })
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({blog:responseJson.data.blog,name:responseJson.data.title})
+        if(this.refs.webWiewId){
+          this.setState({blog:responseJson.data.blog})
+        }
       })
   }
   render() {
     return (
       <View style={{flexDirection:'column',flex:1}}>
           <View style={{alignItems:'stretch',height:50}}>
-            <Header headerName={this.state.name} navigator={this.props.navigator}/>
+            <Header headerName={this.props.title} navigator={this.props.navigator}/>
           </View>
-          <WebView  style={{flex:1}}
+          <WebView
+              ref = "webWiewId"
+              style={{flex:1}}
               source={{html: this.state.blog}}
               />
       </View>

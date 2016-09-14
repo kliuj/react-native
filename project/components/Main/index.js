@@ -1,3 +1,6 @@
+/*
+入口文件
+*/
 import React ,{Component} from 'react';
 import {
    View,
@@ -5,8 +8,9 @@ import {
    BackAndroid,
    ToastAndroid
 } from 'react-native';
-import HomePage from '../Home/index.js';
 
+// import HomePage from '../Home/index.js';
+import {FotterHeader} from '../Header/header.js'
 export default class SampleComponent extends Component {
   constructor(props) {
       super(props);
@@ -17,28 +21,29 @@ export default class SampleComponent extends Component {
   }
   _onBackAndroid() {
       let navigator = this.refs.navigator;
-      // let routers = navigator.getCurrentRoutes();
-      // if (routers.length > 1) {
-      //     navigator.pop();
-      //     return true;
-      // } else {
-      //
-      // }
-      if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-          return false;
+      let routers = navigator.getCurrentRoutes();
+      if (routers.length > 1) {
+          navigator.pop();
+          return true;
+      } else {
+          if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+              return false;
+          }
+          this.lastBackPressed = Date.now();
+          ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+          return true;
       }
-      this.lastBackPressed = Date.now();
-      ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
-      return true;
+
   }
   render() {
-       let Home = 'HomePage',
-           homeComponent = HomePage;
+       let Home = 'FotterHeader',
+           homeComponent = FotterHeader;
        return (
        <Navigator
+         ref="navigator"
          initialRoute={{ name: Home, component: homeComponent }}
          configureScene={(route) => {
-                return Navigator.SceneConfigs.FloatFromBottomAndroid;
+                return Navigator.SceneConfigs.FadeAndroid  ;
               }}
          renderScene={(route, navigator) => {
            let Component = route.component;
