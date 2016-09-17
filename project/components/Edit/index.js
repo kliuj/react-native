@@ -5,6 +5,8 @@ import{
   StyleSheet
 }from 'react-native'
 
+import {CommonNameHeader} from '../Header/header.js'
+
 class EditIndex extends Component {
     constructor(props){
       super(props)
@@ -12,8 +14,9 @@ class EditIndex extends Component {
     render (){
       return (
         <View
-              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+              style={{flex: 1, alignItems: 'center'}}
         >
+            <CommonNameHeader headerName='发布文章' />
             <Text style={styles.info}>填写页正在完善</Text>
         </View>
       )

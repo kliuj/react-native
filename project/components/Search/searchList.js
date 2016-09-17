@@ -14,27 +14,62 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default  class SearchResult extends Component {
    constructor(props){
      super(props)
-     this.state = {resultList:null,notice:'正在搜索数据...'}
+     this.state = {
+       resultList:[],
+       isAllLoad:false,
+       pageIndex:1,
+       ds:ds,
+       notice:'正在搜索数据...'
+      }
    }
    componentDidMount(){
      fetch('http://lwons.com:3000/mobile/search?page=1&q='+this.props.keyword)
      .then((response) => response.json())
      .then((responseJson) => {
        if(responseJson.data.data.length && this.refs.searchContent){
-         this.setState({resultList:ds.cloneWithRows(responseJson.data.data)})
+         this.setState({
+           resultList:responseJson.data.data,
+           ds:ds.cloneWithRows(responseJson.data.data),
+           pageIndex:2
+         })
        }else{
          this.setState({notice:'暂无相关数据'})
        }
+       if(responseJson.data.data.length != 5){
+         this.setState({isAllLoad:true})
+       }
      })
    }
-   getData(){
-
+   _onEndReached(){
+     alert(111)
+     if(this.state.isAllLoad){
+       return ;
+     }
+     fetch('http://lwons.com:3000/mobile/search?page='+this.state.pageIndex+'&q='+this.props.keyword)
+     .then((response) => response.json())
+     .then((responseJson) => {
+       if(responseJson.data.blogList.length == 5){
+         this.setState({
+           resultList:this.state.resultList.concat(responseJson.data.data),
+           pageIndex:this.state.pageIndex +1,
+           ds:this.state.ds.cloneWithRows(this.state.resultList.concat(responseJson.data.data))
+         })
+       }else{
+         this.setState({
+           listResource:this.state.resultList.concat(responseJson.data.data),
+           pageIndex:this.state.pageIndex +1,
+           ds:this.state.ds.cloneWithRows(this.state.resultList.concat(responseJson.data.data)),
+           isAllLoad:true
+         })
+       }
+     })
    }
    _renderList(){
-     if(this.state.resultList){
+     if(this.state.resultList.length){
         return (
           <ListView
-             dataSource={this.state.resultList}
+             dataSource={this.state.ds}
+             onEndReached={this._onEndReached.bind(this)}
              renderRow={(rowData) =><SearchList data={rowData} navigator={this.props.navigator}/>}
            />
         )

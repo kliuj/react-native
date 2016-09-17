@@ -50,6 +50,25 @@ class DetailHeader extends Component {
     )
   }
 }
+/*列表页，填写页，个人信息header*/
+
+class CommonNameHeader extends Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return (
+      <View style={{
+          height: 50,
+          backgroundColor:'#33cd5f',
+          flexDirection: 'row',
+          alignItems: 'center'
+      }}>
+        <Text numberOfLines={1} style={{color: '#fff', fontSize: 16,flex:4,textAlign:'center'}}>{this.props.headerName}</Text>
+      </View>
+    )
+  }
+}
 
 class Tabbar extends Component {
 
@@ -59,7 +78,7 @@ class Tabbar extends Component {
     }
 
     _renderTab(tab, i) {
-        let color = this.props.activeTab == i ? "#E07A38" : "#888";
+        let color = this.props.activeTab == i ? "#33cd5f" : "#888";
         return (
             <TouchableOpacity
                 onPress={()=>this.props.goToPage(i)}
@@ -101,7 +120,7 @@ class FotterHeader extends Component{
         return (
             <ScrollableTabView
                 style={{backgroundColor: '#FCFCFC'}}
-                locked={false}
+                locked={true}
                 scrollWithoutAnimation={true}
                 tabBarPosition={'bottom'}
                 renderTabBar={() => <Tabbar tabNames={this.state.tabNames} tabIconNames={this.state.tabIconNames}/>}
@@ -134,4 +153,4 @@ const styles = StyleSheet.create({
     }
 });
 export default DetailHeader;
-export {FotterHeader}
+export {FotterHeader,CommonNameHeader}
