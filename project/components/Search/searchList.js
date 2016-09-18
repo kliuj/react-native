@@ -23,32 +23,50 @@ export default  class SearchResult extends Component {
       }
    }
    componentDidMount(){
-     fetch('http://lwons.com:3000/mobile/search?page=1&q='+this.props.keyword)
-     .then((response) => response.json())
-     .then((responseJson) => {
-       if(responseJson.data.data.length && this.refs.searchContent){
-         this.setState({
-           resultList:responseJson.data.data,
-           ds:ds.cloneWithRows(responseJson.data.data),
-           pageIndex:2
-         })
-       }else{
-         this.setState({notice:'暂无相关数据'})
-       }
-       if(responseJson.data.data.length != 5){
-         this.setState({isAllLoad:true})
-       }
+    //  fetch('http://lwons.com:3000/mobile/search?page=1&q='+this.props.keyword)
+    //  .then((response) => response.json())
+    //  .then((responseJson) => {
+    //    if(responseJson.data.data.length && this.refs.searchContent){
+    //      this.setState({
+    //        resultList:responseJson.data.data,
+    //        ds:ds.cloneWithRows(responseJson.data.data),
+    //        pageIndex:2
+    //      })
+    //    }else{
+    //      this.setState({notice:'暂无相关数据'})
+    //    }
+    //    if(responseJson.data.data.length != 5){
+    //      this.setState({isAllLoad:true})
+    //    }
+    //  })
+     let urls = ['http://lwons.com:3000/mobile/search?page=1&q='+this.props.keyword,'http://lwons.com:3000/mobile/search?page=2&q='+this.props.keyword];
+     Promise.all(urls.map((url) =>
+         fetch(url).then((response) => response.json())
+     )).then((response) => {
+         let list = response[0].data.data.concat(response[1].data.data)
+        //  alert( JSON.stringify(list))
+         if(list.length && this.refs.searchContent){
+              this.setState({
+                resultList:list,
+                ds:ds.cloneWithRows(list),
+                pageIndex:3
+              })
+          }else{
+            this.setState({notice:'暂无相关数据'})
+          }
+          if(list.length != 10){
+            this.setState({isAllLoad:true})
+          }
      })
    }
    _onEndReached(){
-     alert(111)
      if(this.state.isAllLoad){
        return ;
      }
      fetch('http://lwons.com:3000/mobile/search?page='+this.state.pageIndex+'&q='+this.props.keyword)
      .then((response) => response.json())
      .then((responseJson) => {
-       if(responseJson.data.blogList.length == 5){
+       if(responseJson.data.data.length == 5){
          this.setState({
            resultList:this.state.resultList.concat(responseJson.data.data),
            pageIndex:this.state.pageIndex +1,
@@ -70,6 +88,7 @@ export default  class SearchResult extends Component {
           <ListView
              dataSource={this.state.ds}
              onEndReached={this._onEndReached.bind(this)}
+              onEndReachedThreshold  ={0}
              renderRow={(rowData) =><SearchList data={rowData} navigator={this.props.navigator}/>}
            />
         )
