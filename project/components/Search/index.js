@@ -36,7 +36,7 @@ class Search extends Component{
     });
   }
   _submitSearch(event){
-    if(event.nativeEvent.text){
+    if(event.nativeEvent.text.replace(/\s/g,'')){
         this.goToDetail(event.nativeEvent.text)
     }else{
         alert("请输入关键字")
