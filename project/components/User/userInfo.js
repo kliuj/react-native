@@ -5,24 +5,57 @@ import{
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  AsyncStorage
 }from 'react-native'
 
-export default class UserInfo  extends Component {
+import { connect } from 'react-redux'
+import { logOut } from '../../actions/user'
+
+class UserInfo  extends Component {
+  constructor(props){
+    super(props)
+    this.state={
+        name:'',
+        userImage:'http://7xq8iy.com1.z0.glb.clouddn.com/blog.jpeg',
+        nickName:''
+    }
+  }
+  componentWillMount(){
+    AsyncStorage.getItem('userInfo',(err,result)=>{
+      result = JSON.parse(result);
+      this.userState = result
+      this.setState({
+            name:result.name,
+            userImage:result.img,
+            nickName:result.sign
+      })
+    })
+  }
+  startLogOut(){
+    const {dispatch} = this.props;
+    dispatch(logOut())
+    this.userState.state = false;
+    AsyncStorage.setItem('userInfo',JSON.stringify(this.userState),()=>{
+    })
+  }
+  showImage(){
+  }
   render(){
     return (
-      <View style={{height:180}}>
-        <View style={{height:90,flexDirection:'row',padding:20}}>
+      <View>
+        <View style={{height:170,flexDirection:'row',padding:20,alignItems:'center',justifyContent:'center'}}>
           <Image style={styles.img}
-            source={{uri:'http://7xq8iy.com1.z0.glb.clouddn.com/blog.jpeg'}}
+            source={{uri:this.state.userImage}}
           />
+        </View>
+        <View style={{height:50,flexDirection:'row',padding:20,alignItems:'center'}}>
           <View style={styles.login}>
-              <Text style={styles.word}>用户名：姓名</Text>
-              <Text style={styles.word} numberOfLines={1}>签名：xxx</Text>
+              <Text style={styles.word} numberOfLines={1}>{this.state.name}：{this.state.nickName}</Text>
           </View>
         </View>
         <View style={{height:90,flexDirection:'row',padding:20}}>
-          <TouchableOpacity style={styles.logout}>
+          <TouchableOpacity style={styles.logout} onPress={this.startLogOut.bind(this)}>
               <Text style={styles.word}>退出登录</Text>
           </TouchableOpacity>
         </View>
@@ -34,9 +67,9 @@ export default class UserInfo  extends Component {
 
 const styles = StyleSheet.create({
   img:{
-    height:50,
-    width:50,
-    borderRadius:25,
+    height:150,
+    width:150,
+    borderRadius:75,
     borderColor:'#ddd',
     borderWidth:1
   },
@@ -49,7 +82,7 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },
   word:{
-    fontSize:14
+    fontSize:16
   },
   logout:{
     height:50,
@@ -63,3 +96,5 @@ const styles = StyleSheet.create({
     marginRight:10
   }
 })
+
+export default connect()(UserInfo)

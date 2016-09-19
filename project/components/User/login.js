@@ -5,35 +5,83 @@ import{
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput
+  TextInput,
+  AsyncStorage,
+  ToastAndroid
 }from 'react-native'
 
-export default class LoginComponent  extends Component {
+import { connect,Provider } from 'react-redux'
+import { logIn } from '../../actions/user'
+
+class LoginComponent  extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      username:'',
+      password:''
+    }
+  }
+  componentWillMount(){
+    AsyncStorage.getItem('userInfo',(err,result)=>{
+      result = JSON.parse(result);
+      this.setState({
+            username:result.name
+      })
+    })
+  }
+  startLogin(){
+    if(!this.state.username.replace(/\s/g,'')){
+        ToastAndroid.show('用户名不能为空', ToastAndroid.SHORT);
+        return false;
+    }
+    if(!this.state.password.replace(/\s/g,'')){
+        ToastAndroid.show('密码不能为空', ToastAndroid.SHORT);
+        return false;
+    }
+    const {dispatch} = this.props;
+    fetch('http://lwons.com:3000/mobile/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password:this.state.password,
+        username:this.state.username
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if(responseJson.success == 0){
+        AsyncStorage.setItem('userInfo', JSON.stringify(Object.assign({state:true},responseJson.data)), () => {
+            dispatch(logIn())
+        });
+      }else{
+          ToastAndroid.show(responseJson.msg, ToastAndroid.SHORT);
+      }
+    })
+  }
+  onChangeName(text){
+    this.setState({username:text})
+  }
+  onChangePswd(text){
+    this.setState({password:text})
+  }
   render(){
     return (
-      // <View style={{height:90,flexDirection:'row',padding:20}}>
-      //   <TouchableOpacity style={styles.login}>
-      //       <Text style={styles.word}>登录</Text>
-      //   </TouchableOpacity>
-      //   <TouchableOpacity style={styles.login}>
-      //       <Text style={styles.word}>注册</Text>
-      //   </TouchableOpacity>
-      // </View>
-      <View style={{height:180}}>
+      <View style={{backgroundColor:'#fff',marginTop:20}}>
           <View style={styles.input}>
-            <TextInput placeholder="QQ号/手机号/邮箱" underlineColorAndroid ="transparent" />
+            <TextInput placeholder="用户名" defaultValue={this.state.username} underlineColorAndroid ="transparent"
+              onChangeText={this.onChangeName.bind(this)}/>
           </View>
           <View style={styles.input}>
-            <TextInput placeholder="密码" underlineColorAndroid ="transparent" secureTextEntry={true}/>
+            <TextInput placeholder="密码" underlineColorAndroid ="transparent" secureTextEntry={true}
+              onChangeText={this.onChangePswd.bind(this)}/>
           </View>
-          <View style={{height:90,flexDirection:'row',padding:20}}>
-            <TouchableOpacity style={styles.login}>
-                <Text style={styles.word}>登录</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.login}>
-                <Text style={styles.word}>注册</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.login} onPress={this.startLogin.bind(this)}>
+              <Text style={{fontSize:16,color:"#fff"}}>登录</Text>
+          </TouchableOpacity>
+
       </View>
     )
   }
@@ -42,22 +90,28 @@ export default class LoginComponent  extends Component {
 const styles = StyleSheet.create({
   login:{
     height:50,
-    borderColor:'#ddd',
+    borderColor:'#EFEFF4',
     borderWidth:2,
     borderRadius:4,
     flex:1,
     justifyContent:'center',
     alignItems:'center',
-    marginLeft:10,
-    marginRight:10
+    marginLeft:30,
+    marginRight:30,
+    marginTop:20,
+    marginBottom:20,
+    backgroundColor:'#33cd5f'
   },
   word:{
-    fontSize:16
+    fontSize:14
   },
   input:{
     paddingLeft:20,
-    borderColor:'#ddd',
     borderBottomWidth:1,
-    justifyContent:'center'
+    justifyContent:'center',
+    borderColor:'#EFEFF4',
+    height:50
   }
 })
+
+export default connect()(LoginComponent);

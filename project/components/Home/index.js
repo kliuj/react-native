@@ -64,7 +64,7 @@ class Home extends Component {
         this.setState({hotList:value[0],newList:value[1]})
         this.saveData(value)
     },(value)=>{
-        ToastAndroid.show(value[0], ToastAndroid.SHORT);
+        ToastAndroid.show(value, ToastAndroid.SHORT);
     })
   }
   _onPressSearch(){

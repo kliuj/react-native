@@ -9,62 +9,66 @@ import {CommonNameHeader} from '../Header/header.js'
 import Icon from 'react-native-vector-icons/Ionicons'
 import LoginComponent from './login'
 import UserInfo from './userInfo'
+import About from './about'
+import Reg from './reg'
 
+import { connect,Provider } from 'react-redux'
+import { getLogin } from '../../actions/user'
 
 class User extends Component {
     constructor(props){
       super(props)
-      this.state={
-        isLogin:false
-      }
+
     }
-    getUserInfo(){
-      if(this.state.isLogin){
+    componentWillMount(){
+      const { dispatch} = this.props;
+      dispatch(getLogin())
+    }
+    getUserInfo(isLoggedIn){
+      if(isLoggedIn.toString() == 'true'){
         return (
           <UserInfo />
         )
-      }else{
+      }else if(isLoggedIn.toString() == 'false'){
         return (
           <LoginComponent />
         )
       }
     }
+    gotoAbout(){
+      let navigator = this.props.navigator;
+      navigator.push({
+        name: 'About',
+        component: About
+      })
+    }
+    gotoReg(){
+      let navigator = this.props.navigator;
+      navigator.push({
+        name: 'Reg',
+        component: Reg
+      })
+    }
     render() {
+        const {isLoggedIn} = this.props;
         return (
-            <View>
-              <CommonNameHeader headerName='用户信息' />
+            <View style={{backgroundColor:'#EFEFF4',flex:1}}>
+              <CommonNameHeader headerName='登录/注册' />
               {
-                this.getUserInfo()
+                this.getUserInfo(isLoggedIn)
               }
-              <View style={styles.funCon}>
-                <TouchableOpacity style={styles.moreFun}>
-                  <Text style={{flex:8}}>清除缓存</Text>
-                  <View  style={{flex:2,alignItems:'flex-end'}}>
-                      <Icon
-                          name='ios-arrow-forward'
-                          size={25}
-                          color='#ddd'
-                      />
-                  </View>
+              <View style={{flexDirection:'row',paddingBottom:20,alignItems:'center',justifyContent:'center'}}>
+                <TouchableOpacity style={styles.reg} onPress={this.gotoReg.bind(this)}>
+                    <Text style={styles.word}>注册账户</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.funCon}>
-                <TouchableOpacity style={styles.moreFun}>
-                  <Text style={{flex:8}}>关于软件</Text>
-                  <View  style={{flex:2,alignItems:'flex-end'}}>
-                      <Icon
-                          name='ios-arrow-forward'
-                          size={25}
-                          color='#ddd'
-                      />
-                  </View>
+                <TouchableOpacity style={{padding:10}} onPress={this.gotoAbout.bind(this)}>
+                    <Text style={styles.word}>关于软件</Text>
                 </TouchableOpacity>
               </View>
             </View>
         )
     }
 }
-
 const styles = StyleSheet.create({
   info:{
     textAlign: 'center', lineHeight: 25, color: '#888'
@@ -99,7 +103,18 @@ const styles = StyleSheet.create({
   },
   word:{
     fontSize:16
+  },
+  reg:{
+    paddingLeft:10,
+    paddingRight:10,
+    borderColor:'#33cd5f',
+    borderRightWidth:2
   }
 })
 
-export default User
+function getUserState(state){
+  return {
+    isLoggedIn:state.userState.isLoggedIn
+  }
+}
+export default connect(getUserState)(User);
