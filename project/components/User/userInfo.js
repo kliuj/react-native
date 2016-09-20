@@ -24,12 +24,14 @@ class UserInfo  extends Component {
   componentWillMount(){
     AsyncStorage.getItem('userInfo',(err,result)=>{
       result = JSON.parse(result);
-      this.userState = result
-      this.setState({
-            name:result.name,
-            userImage:result.img,
-            nickName:result.sign
-      })
+      if(result){
+        this.userState = result;
+        this.setState({
+              name:result.name,
+              userImage:result.img,
+              nickName:result.sign
+        })
+      }
     })
   }
   startLogOut(){

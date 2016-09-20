@@ -43,7 +43,7 @@ export default class SampleComponent extends Component {
          ref="navigator"
          initialRoute={{ name: Home, component: homeComponent }}
          configureScene={(route) => {
-                return Navigator.SceneConfigs.HorizontalSwipeJump  ;
+                return Navigator.SceneConfigs.FloatFromRight  ;
               }}
          renderScene={(route, navigator) => {
            let Component = route.component;

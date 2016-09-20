@@ -24,7 +24,7 @@ class LoginComponent  extends Component {
   componentWillMount(){
     AsyncStorage.getItem('userInfo',(err,result)=>{
       result = JSON.parse(result);
-      this.setState({
+      result && this.setState({
             username:result.name
       })
     })
