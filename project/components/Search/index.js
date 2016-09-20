@@ -82,33 +82,33 @@ class Search extends Component{
           <View style={{alignItems:'stretch',height:50}}>
             <Header headerName='搜索关键字' navigator={this.props.navigator}/>
           </View>
-              <View style={styles.searchMain}>
-                  <Icon
-                      name='ios-search'
-                      size={25}
-                      color='#8A8686'
-                      style={{flex:1}}
-                  />
-                  <TextInput style={styles.searchInput}
-                    underlineColorAndroid = {'transparent'}
-                    multiline={false}
-                    placeholder='输入标题关键字'
-                    keyboardType ='web-search'
-                    onSubmitEditing = {(event) => this._submitSearch(event)}
-                  />
-              </View>
-              {this._renderHistory()}
-              {
-                this.state.history.map((item,i)=>{
-                  return (
-                    <TouchableOpacity onPress={this._pressHistory.bind(this,item)} key={i}>
-                        <View style={styles.historyItem} >
-                            <Text >{item}</Text>
-                        </View>
-                    </TouchableOpacity>
-                  )
-                })
-              }
+          <View style={styles.searchMain}>
+              <Icon
+                  name='ios-search'
+                  size={25}
+                  color='#8A8686'
+                  style={{flex:1}}
+              />
+              <TextInput style={styles.searchInput}
+                underlineColorAndroid = {'transparent'}
+                multiline={false}
+                placeholder='输入标题关键字'
+                keyboardType ='web-search'
+                onSubmitEditing = {(event) => this._submitSearch(event)}
+              />
+          </View>
+          {this._renderHistory()}
+          {
+            this.state.history.map((item,i)=>{
+              return (
+                <TouchableOpacity onPress={this._pressHistory.bind(this,item)} key={i}>
+                    <View style={styles.historyItem} >
+                        <Text >{item}</Text>
+                    </View>
+                </TouchableOpacity>
+              )
+            })
+          }
       </View>
     )
   }
