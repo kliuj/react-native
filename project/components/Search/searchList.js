@@ -104,7 +104,7 @@ export default  class SearchResult extends Component {
    }
    render(){
      return (
-       <View style={{flexDirection:'column',flex:1}} ref="searchContent" >
+       <View style={{flexDirection:'column',flex:1,backgroundColor:'#fff'}} ref="searchContent" >
            <View style={{alignItems:'stretch',height:50}}>
              <Header headerName={this.props.keyword} navigator={this.props.navigator}/>
            </View>
