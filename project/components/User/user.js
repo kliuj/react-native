@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   reg:{
     paddingLeft:10,
     paddingRight:10,
-    borderColor:'#33cd5f',
+    borderColor:'#ddd',
     borderRightWidth:2
   }
 })

@@ -126,7 +126,10 @@ class Home extends Component {
 }
 const styles  = StyleSheet.create({
   topHead:{
-    padding:10,
+    paddingLeft:5,
+    paddingRight:5,
+    paddingTop:10,
+    paddingBottom:10,
     backgroundColor: '#33cd5f',
     height:60,
     flexDirection:"row"

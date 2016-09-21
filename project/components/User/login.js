@@ -90,8 +90,6 @@ class LoginComponent  extends Component {
 const styles = StyleSheet.create({
   login:{
     height:50,
-    borderColor:'#EFEFF4',
-    borderWidth:2,
     borderRadius:4,
     flex:1,
     justifyContent:'center',
